@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.myproject.reviewer</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/Users/yourname/my-project/scripts/auto-reviewer.sh</string>
+  </array>
+  <key>StartInterval</key>
+  <integer>3600</integer>
+  <key>StandardOutPath</key>
+  <string>/Users/yourname/my-project/.ai/logs/launchd-reviewer.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/yourname/my-project/.ai/logs/launchd-reviewer.err.log</string>
+  <key>RunAtLoad</key>
+  <false/>
+</dict>
+</plist>

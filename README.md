@@ -57,7 +57,8 @@ agentic-workflow-poc/
 │   ├── context/
 │   │   ├── product.md           ← what you're building (fill this in)
 │   │   ├── architecture.md      ← tech stack decisions (fill this in)
-│   │   └── test-strategy.md     ← what passing looks like per task type
+│   │   ├── test-strategy.md     ← what passing looks like per task type
+│   │   └── lessons-learned.md   ← pitfalls from past tasks (maintained by memory-curator)
 │   ├── prompts/                 ← reusable prompt snippets
 │   └── logs/                    ← agent run logs (gitignored)
 ├── scripts/
@@ -67,11 +68,22 @@ agentic-workflow-poc/
 │   ├── fix-task.sh              ← resolves a blocked task with one command
 │   ├── run-backend-loop.sh      ← manual mode: print Codex prompt for backend task
 │   ├── auto-backend.sh          ← automated mode: run Codex non-interactively
+│   ├── auto-reviewer.sh         ← self-learning: architectural review agent
+│   ├── auto-product-owner.sh    ← self-learning: converts findings into tasks
+│   ├── auto-memory-curator.sh   ← self-learning: updates lessons-learned + session memory
 │   └── show-queue.sh            ← pretty-print queue status table
 ├── launchd/
-│   ├── com.myproject.backend.plist    ← run auto-backend.sh every 20 min
-│   ├── com.myproject.validator.plist  ← run auto-validator.sh every 25 min
-│   └── com.myproject.dashboard.plist  ← keep dashboard_server.py always alive
+│   ├── com.myproject.backend.plist        ← run auto-backend.sh every 20 min
+│   ├── com.myproject.validator.plist      ← run auto-validator.sh every 25 min
+│   ├── com.myproject.dashboard.plist      ← keep dashboard_server.py always alive
+│   ├── com.myproject.reviewer.plist       ← run auto-reviewer.sh every 60 min
+│   ├── com.myproject.product-owner.plist  ← run auto-product-owner.sh every 30 min
+│   └── com.myproject.memory-curator.plist ← run auto-memory-curator.sh every 120 min
+├── .claude/
+│   ├── agents/
+│   │   └── agent-template.md   ← template for new agents (copy to ~/.claude/agents/)
+│   └── skills/
+│       └── SKILL.md            ← generic skill template (copy to ~/.claude/skills/<role>/)
 ├── docs/
 │   └── claude-codex-agent-workflow-guide.md  ← full reference guide
 └── .gitignore
@@ -173,6 +185,37 @@ git branch -d agent/task-004
 | Who owns a task right now? | `queue.json` → `owner` field |
 | Why is a task blocked? | `queue.json` → `resume_from` + handoff `## blockers` |
 | Overall status | `./scripts/show-queue.sh` |
+| Known pitfalls to avoid | `.ai/context/lessons-learned.md` |
+| Unactioned reviewer findings | `.ai/state/review-actions-pending.json` |
+| Agent template to build on | `.claude/agents/agent-template.md` |
+| Skill template to build on | `.claude/skills/SKILL.md` |
+
+---
+
+## Self-learning loop
+
+The workflow improves itself over time without chat memory or manual note-taking. Three services close the feedback loop automatically:
+
+```
+Reviewer (every 60 min)
+  ↓  detects architectural drift, design debt, security issues
+  ↓  writes findings to .ai/handoffs/arch-review-<timestamp>.md
+  ↓  kickstarts product-owner immediately
+
+Product-owner (every 30 min, + on kickstart)
+  ↓  reads .ai/state/review-actions-pending.json
+  ↓  converts Critical/High findings into .ai/tasks/ + queue.json entries
+  ↓  skips findings already covered by existing tasks
+
+Memory-curator (every 120 min)
+  ↓  reads all new handoffs since last run
+  ↓  updates .ai/context/lessons-learned.md with imperative pitfall bullets
+  ↓  updates ~/.claude/projects/<project>/memory/ for future Claude Code sessions
+```
+
+Agents read `lessons-learned.md` at task start (step 5 in `AGENTS.md`). Pitfalls discovered in one sprint automatically inform agents in the next — no manual propagation.
+
+**To enable:** load the three new plists from `launchd/` alongside the existing ones. They use `RunAtLoad: false` so they only fire on schedule, not immediately on load.
 
 ---
 

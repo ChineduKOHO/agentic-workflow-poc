@@ -1789,6 +1789,25 @@ This removes the need for manual nudging to recover blocked tasks and provides s
 
 ---
 
+## Self-learning
+
+This workflow can “self-learn” without relying on chat memory or hidden model state. The learning loop is file-based and auditable:
+
+1. **Discover** — A reviewer agent periodically inspects the live repo and writes findings to a handoff (`.ai/handoffs/…`).
+2. **Convert** — A product-owner agent turns high-signal findings into explicit tasks (`.ai/tasks/*.md` + `queue.json`).
+3. **Execute** — Implementer/validator agents complete tasks in isolated worktrees and write structured handoffs.
+4. **Persist** — A memory-curator agent writes durable guidance to:
+   - `.ai/context/lessons-learned.md` (project lessons agents should read at task start)
+   - `~/.claude/projects/<project>/memory/` (session memory for future agent runs, if you use Claude Code)
+
+**What counts as “learning”:**
+- New automation safeguards (locks, TTLs, atomic writes) and clearer queue semantics.
+- Repeatable validation fixes (correct working directory, dependency prerequisites).
+- Short, imperative pitfalls with evidence (link to a handoff or failing command).
+
+**What does not count:**
+- Embedding project-specific implementation logs in this guide. Keep those in the project repo runbook/changelog and link to them.
+
 ## Bootstrapping a new project
 
 If you are setting up this workflow from scratch on a new codebase:
