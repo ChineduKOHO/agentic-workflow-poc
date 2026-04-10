@@ -1,10 +1,10 @@
 ---
-name: [role]-skills
-agent: [role]
+name: "[role]-skills"
+agent: "[role]"
 model: sonnet
 color: green
 memory: user
-description: Core skills with behavioral rules, quality gates, memory management, and self-improvement for a [role] agent.
+description: "Core skills with behavioral rules, quality gates, memory management, and self-improvement for a [role] agent."
 tools: Read, Write, Edit, Bash, Glob, Grep
 version: 1.1
 last_updated: 2026-04-10
