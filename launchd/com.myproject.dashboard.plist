@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.myproject.dashboard</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/bin/python3</string>
+    <string>/Users/yourname/my-project/scripts/dashboard_server.py</string>
+  </array>
+  <key>KeepAlive</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/Users/yourname/my-project/.ai/logs/dashboard-server.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/yourname/my-project/.ai/logs/dashboard-server.err.log</string>
+  <key>RunAtLoad</key>
+  <true/>
+</dict>
+</plist>

@@ -1,0 +1,4 @@
+worktrees/
+.ai/logs/
+.ai/state/locks/
+.ai/state/progress/
